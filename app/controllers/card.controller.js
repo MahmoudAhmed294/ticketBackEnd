@@ -1,6 +1,14 @@
 const db = require("../config/db");
 const { QueryTypes } = require("sequelize");
 
+let currentdate = new Date();
+const date =
+  currentdate.getFullYear() +
+  "-" +
+  (currentdate.getMonth() + 1) +
+  "-" +
+  currentdate.getDate() 
+
 exports.getCard = async (req, res) => {
   const { id } = req.params;
   try {
@@ -31,7 +39,7 @@ exports.getCard = async (req, res) => {
 
 exports.chargeBalance = async (req, res) => {
   try {
-    const { ID, balance } = req.body;
+    const { ID, balance , userName } = req.body;
 
     if (balance > 0) {
       return new Promise(async (resolve, reject) => {
@@ -50,20 +58,28 @@ exports.chargeBalance = async (req, res) => {
           `select * from clcpCards  WHERE ID = ${ID}`,
           { type: QueryTypes.SELECT, raw: true }
         );
+        const saveCardTopUp = await db.sequelize.query(
+          `INSERT INTO clcpCardTopUp  (
+            CardID,
+            Amount,
+            ChargeDate,
+            ChargeUser,
+            IsPaid
+      
+          ) VALUES (${card[0].ID } , ${balance} , '${date}' , '${userName}' , 1 )`,
+          { type: QueryTypes.SELECT, raw: true }
+        );
         res.json({
-          ID:card[0].ID,
-          Balance:card[0].Balance,
-          IsPrinted:card[0].IsPrinted,
-          memberID:card[0].ID.MemberID,
-        
+          ID: card[0].ID,
+          Balance: card[0].Balance,
+          IsPrinted: card[0].IsPrinted,
+          memberID: card[0].ID.MemberID,
         });
-      }).then( (res) => {
+      }).then((res) => {
         res.status(200);
       });
-    }
-    else{
-    res.status(500);
-
+    } else {
+      res.status(500);
     }
   } catch (err) {
     console.log(err);

@@ -5,6 +5,7 @@ const axios = require("axios"),
   { getToken } = require("../middleware/auth"),
   maxAge = 168 * 60 * 60;
 
+
 exports.Login = async (req, res) => {
   const user = await axios
     .post(
@@ -37,14 +38,10 @@ exports.Login = async (req, res) => {
         },
         maxAge
       );
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: maxAge * 1000,
-      });
+
       res
         .json({
+          token:token,
           userName: user,
           tickets: allTickets,
           GateID: GateID[0].GateID,

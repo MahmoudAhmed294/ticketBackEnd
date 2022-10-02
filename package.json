@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start":"node server.js"
+    "start": "node server.js"
   },
   "keywords": [
     "node js",
@@ -21,7 +21,6 @@
   "dependencies": {
     "axios": "^0.27.2",
     "compression": "^1.7.4",
-    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",

@@ -4,7 +4,6 @@ const express = require("express"),
   morgan = require("morgan"),
   compression = require("compression"),
   db = require("./app/config/db"),
-  cookieParser = require("cookie-parser"),
   config = require("./app/config"),
   app = express(),
   { sendTicketsIfLogin } = require("./app/controllers/login.controller"),
@@ -18,8 +17,7 @@ corsOptions = {
 
 app
   .use(cors(corsOptions))
-  .use(morgan("dev"))
-  .use(cookieParser())
+  .use(morgan("combined"))
   .use(helmet())
   .use(compression())
   .use(express.json())
@@ -38,12 +36,6 @@ app.get("/api/checkToken", withAuth, async (req, res) => {
   }
 });
 
-app.get("/api/logout", withAuth, (req, res) => {
-  return res
-    .clearCookie("token")
-    .status(200)
-    .json({ message: "Successfully logged out " });
-});
 
 db.sequelize.sync();
 app.get("/", (req, res) => {
