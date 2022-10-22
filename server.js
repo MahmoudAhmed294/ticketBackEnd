@@ -31,6 +31,7 @@ app.get("/api/checkToken", withAuth, async (req, res) => {
         userName: req.data.userName,
         GateID: req.data.GateID,
         tickets: Tickets,
+        isAdmin: req.data.userName === 'admin' && true
       })
       .status(200);
   }

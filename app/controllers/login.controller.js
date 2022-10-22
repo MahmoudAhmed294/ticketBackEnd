@@ -5,8 +5,8 @@ const axios = require("axios"),
   { getToken } = require("../middleware/auth"),
   maxAge = 168 * 60 * 60;
 
-
 exports.Login = async (req, res) => {
+  console.log(req.body.userName);
   const user = await axios
     .post(
       "https://open-air-mall-proxy-server.vercel.app/api/FrontEnd/SignIn",
@@ -19,6 +19,19 @@ exports.Login = async (req, res) => {
       console.error(error);
     });
   if (user !== "Invlid user") {
+    // const Test = await db.sequelize.query(
+    //   `SELECT CompanyCode, AgentId
+    //   FROM UniqueAgentIdToUniqueAgentId un
+    //   WHERE un.UniqueAgentId =
+    //         (SELECT UniqueAgentId
+    //          FROM (SELECT q.LastChangeDate, a.UniqueAgentId
+    //                FROM QueueUpdates q, AgentProductTraining a
+    //                WHERE a.LastChangeDate >= q.LastChangeDate
+    //               ) t
+    //         )
+    //   `,
+    //   { type: QueryTypes.SELECT, raw: true }
+    // );
     const GateID = await db.sequelize.query(
       `select GateID from clcpGateUsers where UsersName = '${user}'`,
       { type: QueryTypes.SELECT, raw: true }
@@ -41,10 +54,11 @@ exports.Login = async (req, res) => {
 
       res
         .json({
-          token:token,
+          token: token,
           userName: user,
           tickets: allTickets,
           GateID: GateID[0].GateID,
+          isAdmin: req.body.userName === "admin" ? true : false,
         })
         .status(200);
     }
@@ -73,7 +87,7 @@ exports.getGateName = async (req, res) => {
       { type: QueryTypes.SELECT, raw: true }
     );
 
-    res.json({Name:GateName[0].Name});
+    res.json({ Name: GateName[0].Name });
   } catch (error) {
     console.log(error);
     res.send(error);
