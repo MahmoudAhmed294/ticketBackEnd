@@ -17,7 +17,7 @@ corsOptions = {
 
 app
   .use(cors(corsOptions))
-  .use(morgan("dev"))
+  .use(morgan("combined"))
   .use(helmet())
   .use(compression())
   .use(express.json())
