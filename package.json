@@ -29,7 +29,7 @@
     "morgan": "^1.10.0",
     "node-cache": "^5.1.2",
     "sequelize": "^6.6.5",
-    "tedious": "^11.4.0"
+    "tedious": "^15.1.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.2",
