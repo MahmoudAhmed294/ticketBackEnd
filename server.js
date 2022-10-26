@@ -17,7 +17,7 @@ corsOptions = {
 
 app
   .use(cors(corsOptions))
-  .use(morgan("dev"))
+  .use(morgan("combined"))
   .use(helmet())
   .use(compression())
   .use(express.json())
@@ -31,7 +31,7 @@ app.get("/api/checkToken", withAuth, async (req, res) => {
         userName: req.data.userName,
         GateID: req.data.GateID,
         tickets: Tickets,
-        isAdmin: req.data.userName === 'admin' && true
+        isAdmin: req.data.isAdmin 
       })
       .status(200);
   }
