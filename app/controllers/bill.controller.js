@@ -39,7 +39,7 @@ exports.BillNumber = async (req, res) => {
   }
 };
 
-exports.addBill = async (req, res, next) => {
+exports.addBill = async (req, res) => {
   const {
     summary,
     total,

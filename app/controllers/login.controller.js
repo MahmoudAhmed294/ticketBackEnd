@@ -6,55 +6,59 @@ const axios = require("axios"),
   maxAge = 168 * 60 * 60;
 
 exports.Login = async (req, res) => {
-  const user = await db.sequelize.query(
-    `
+  try{
+
+    const user = await db.sequelize.query(
+      `
       SELECT userName 
-  FROM [dbo].[AspNetUsers] 
-  where Id = (
-  SELECT Id 
-    FROM [dbo].[tktUsers] 
-	where UserName = '${req.body.userName}' And PasswordHash = '${req.body.password}'
-  )
-      `,
-    { type: QueryTypes.SELECT, raw: true }
-  );
-  console.log(user);
-  if (user) {
-    const GateID = await db.sequelize.query(
-      `select GateID from clcpGateUsers where UsersName = '${user[0].userName}'`,
-      { type: QueryTypes.SELECT, raw: true }
-    );
-    const PriceCategoryIds = await db.sequelize.query(
+      FROM [dbo].[AspNetUsers] 
+      where Id = (
+        SELECT Id 
+        FROM [dbo].[tktUsers] 
+        where UserName = '${req.body.userName}' And PasswordHash = '${req.body.password}'
+        )
+        `,
+        { type: QueryTypes.SELECT, raw: true }
+        );
+        if (user) {
+          const GateID = await db.sequelize.query(
+            `select GateID from clcpGateUsers where UsersName = '${user[0].userName}'`,
+            { type: QueryTypes.SELECT, raw: true }
+            );
+            const PriceCategoryIds = await db.sequelize.query(
       `select PriceCategory from clcpPriceCategoryGates where Gate = ${GateID[0].GateID}`,
       { type: QueryTypes.SELECT, raw: true }
-    );
-
-    const allTickets = await TicketHandleForUser(PriceCategoryIds);
-
-    if (allTickets) {
+      );
+      
+      const allTickets = await TicketHandleForUser(PriceCategoryIds);
+      
+      if (allTickets) {
       const token = getToken(
         {
           GateID: GateID[0].GateID,
           userName: user[0].userName,
-          isAdmin: user[0].userName ===  'Admin' && true,
+          isAdmin: user[0].userName === "Admin" && true,
         },
         maxAge
-      );
-      console.log(user[0].IsAdmin);
-
-      res
+        );
+        
+        res
         .json({
           token: token,
           userName: user[0].userName,
           tickets: allTickets,
           GateID: GateID[0].GateID,
-          isAdmin: user[0].userName ===  'Admin' && true,
+          isAdmin: user[0].userName === "Admin" && true,
         })
         .status(200);
-    }
-  } else {
-    res.send("Invalid user");
+      }
+    } 
+  }
+  catch(error){
     res.status(500);
+    res.send(error)
+
+
   }
 };
 
