@@ -56,7 +56,7 @@ exports.Login = async (req, res) => {
   }
   catch(error){
     res.status(500);
-    res.send(error)
+    res.send('User or Password incorrect. Please try again')
 
 
   }

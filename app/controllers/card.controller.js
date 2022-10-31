@@ -7,7 +7,7 @@ const date =
   "-" +
   (currentdate.getMonth() + 1) +
   "-" +
-  currentdate.getDate() 
+  currentdate.getDate();
 
 exports.getCard = async (req, res) => {
   const { id } = req.params;
@@ -39,26 +39,15 @@ exports.getCard = async (req, res) => {
 
 exports.chargeBalance = async (req, res) => {
   try {
-    const { ID, balance , userName } = req.body;
+    const { ID, balance, userName } = req.body;
 
     if (balance > 0) {
       return new Promise(async (resolve, reject) => {
-        const currentBalance = await db.sequelize.query(
-          `select Balance from clcpCards  WHERE ID = ${ID}`,
-          { type: QueryTypes.SELECT, raw: true }
-        );
-
-        await db.sequelize.query(
-          `UPDATE dbo.clcpCards SET Balance = ${
-            currentBalance[0].Balance + +balance
-          } WHERE ID = ${ID}`,
-          { type: QueryTypes.SELECT, raw: true }
-        );
         const card = await db.sequelize.query(
           `select * from clcpCards  WHERE ID = ${ID}`,
           { type: QueryTypes.SELECT, raw: true }
         );
-        const saveCardTopUp = await db.sequelize.query(
+         await db.sequelize.query(
           `INSERT INTO clcpCardTopUp  (
             CardID,
             Amount,
@@ -66,20 +55,17 @@ exports.chargeBalance = async (req, res) => {
             ChargeUser,
             IsPaid
       
-          ) VALUES (${card[0].ID } , ${balance} , '${date}' , '${userName}' , 1 )`,
+          ) VALUES (${card[0].ID} , ${balance} , '${date}' , '${userName}' , 1 )`,
           { type: QueryTypes.SELECT, raw: true }
         );
         res.json({
           ID: card[0].ID,
-          Balance: card[0].Balance,
-          IsPrinted: card[0].IsPrinted,
-          memberID: card[0].ID.MemberID,
         });
-      }).then((res) => {
         res.status(200);
-      });
+      })
     } else {
-      res.status(500);
+      res.send('unexpected error happened'); 
+           res.status(500);
     }
   } catch (err) {
     console.log(err);
